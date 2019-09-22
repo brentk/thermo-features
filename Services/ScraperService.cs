@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using AngleSharp;
 using AngleSharp.Dom;
 using Newtonsoft.Json;
-using ThermoScrape.Models;
+using ThermoFeatures.Models;
 
-namespace ThermoScrape {
+namespace ThermoFeatures {
 
     public class ScraperService {
 
@@ -18,7 +18,7 @@ namespace ThermoScrape {
 
             ThermostatLog response = null;
 
-            using (var db = new ThermoScraperDbContext()) {
+            using (var db = new ThermoFeaturesDbContext()) {
 
                 DateTimeOffset tolerance = DateTimeOffset.Now.AddHours(-5);
 

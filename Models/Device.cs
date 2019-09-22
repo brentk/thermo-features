@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace ThermoScrape.Models {
+namespace ThermoFeatures.Models {
 
     public class Device {
         public string Brand {get; set;}

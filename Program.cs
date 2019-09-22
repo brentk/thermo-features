@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace ThermoScrape
+namespace ThermoFeatures
 {
     class Program
     {
@@ -11,8 +11,8 @@ namespace ThermoScrape
                 throw new Exception("local.db not found, please run \"dotnet ef database update\" or the \"Run Migrations\" build step to build initial database.");
             }
 
-            ScraperService service = new ScraperService();
-            ThermostatLog log = service.Scrape();
+            ApiService service = new ApiService();
+            ThermostatLog log = service.Save();
             ThermostatParser parser = new ThermostatParser();
             parser.Parse(log);
         }

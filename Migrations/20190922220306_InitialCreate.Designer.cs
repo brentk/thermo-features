@@ -4,12 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using ThermoScrape;
+using ThermoFeatures;
 
 namespace thermo_scrape.Migrations
 {
-    [DbContext(typeof(ThermoScraperDbContext))]
-    [Migration("20190922194308_InitialCreate")]
+    [DbContext(typeof(ThermoFeaturesDbContext))]
+    [Migration("20190922220306_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -18,7 +18,7 @@ namespace thermo_scrape.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.2.6-servicing-10079");
 
-            modelBuilder.Entity("ThermoScrape.ThermostatLog", b =>
+            modelBuilder.Entity("ThermoFeatures.ThermostatLog", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();

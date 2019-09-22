@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
-using ThermoScrape.Models;
+using ThermoFeatures.Models;
 
-namespace ThermoScrape {
+namespace ThermoFeatures {
     public class ThermostatParser {
         public void Parse(ThermostatLog log) {
             List<Device> devices = JsonConvert.DeserializeObject<List<Device>>(log.Json);

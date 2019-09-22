@@ -1,8 +1,8 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 
-namespace ThermoScrape {
-    public class ThermoScraperDbContext: DbContext {
+namespace ThermoFeatures {
+    public class ThermoFeaturesDbContext: DbContext {
 
         public DbSet<ThermostatLog> ThermostatLogs {get; set;}
 
