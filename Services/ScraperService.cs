@@ -20,11 +20,36 @@ namespace ThermoScrape {
         public ScraperService (){
         }
 
-        public void Scrape() {
-            List<IDocument> pages = GetAllPages();
-            List<string> deviceUrls = GetDetailUrls(pages);
-            List<Device> devices = GetDetails(deviceUrls);
-            string json = JsonConvert.SerializeObject(devices);
+        public string Scrape() {
+
+            string response = null;
+
+            using (var db = new ThermoScraperDbContext()) {
+
+                DateTimeOffset tolerance = DateTimeOffset.Now.AddHours(-5);
+
+                ThermostatLog log = db.ThermostatLogs
+                    .Where(l => l.Stamp > tolerance)
+                    .OrderByDescending(l => l.Stamp).FirstOrDefault();
+
+                if (log == null) {
+                    List<IDocument> pages = GetAllPages();
+                    List<string> deviceUrls = GetDetailUrls(pages);
+                    List<Device> devices = GetDetails(deviceUrls);
+                    response = JsonConvert.SerializeObject(devices);
+
+                    log = new ThermostatLog() {
+                        Id = Guid.NewGuid().ToString(),
+                        Json = response,
+                        Stamp = DateTimeOffset.Now,
+                    };
+
+                    db.Add(log);
+                    db.SaveChanges();
+                }
+            }
+
+            return response;
         }
 
         protected List<Device> GetDetails(List<string> urls) {
