@@ -59,7 +59,7 @@ namespace ThermoScrape {
                 MaxDegreeOfParallelism = 4
             };
 
-            Parallel.ForEach(urls.GetRange(0, 8), options, url => {
+            Parallel.ForEach(urls, options, url => {
                 IDocument deviceDocument = GetDocument(url);
                 var detail = GetDeviceDetail(deviceDocument);
                 response.Add(detail);
