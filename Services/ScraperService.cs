@@ -5,47 +5,44 @@ using System.Threading.Tasks;
 using AngleSharp;
 using AngleSharp.Dom;
 using Newtonsoft.Json;
+using ThermoScrape.Models;
 
 namespace ThermoScrape {
-
-    public class Device {
-        public string Brand {get; set;}
-        public string ModelName {get; set;}
-        public string ModelNumber {get; set;}
-        public List<string> Features {get; set;}
-    }
 
     public class ScraperService {
 
         public ScraperService (){
         }
 
-        public string Scrape() {
+        public ThermostatLog Scrape() {
 
-            string response = null;
+            ThermostatLog response = null;
 
             using (var db = new ThermoScraperDbContext()) {
 
                 DateTimeOffset tolerance = DateTimeOffset.Now.AddHours(-5);
 
-                ThermostatLog log = db.ThermostatLogs
+                response = db.ThermostatLogs
                     .Where(l => l.Stamp > tolerance)
                     .OrderByDescending(l => l.Stamp).FirstOrDefault();
 
-                if (log == null) {
+                if (response == null) {
+                    Console.WriteLine("No recent thermostat log found, pulling new records:");
                     List<IDocument> pages = GetAllPages();
                     List<string> deviceUrls = GetDetailUrls(pages);
                     List<Device> devices = GetDetails(deviceUrls);
-                    response = JsonConvert.SerializeObject(devices);
+                    string json = JsonConvert.SerializeObject(devices);
 
-                    log = new ThermostatLog() {
+                    response = new ThermostatLog() {
                         Id = Guid.NewGuid().ToString(),
-                        Json = response,
+                        Json = json,
                         Stamp = DateTimeOffset.Now,
                     };
 
-                    db.Add(log);
+                    db.Add(response);
                     db.SaveChanges();
+                } else {
+                    Console.WriteLine($"Using thermostat log pulled at: {response.Stamp.ToString("M/d/yyyy h:mmtt")}");
                 }
             }
 
@@ -157,8 +154,8 @@ namespace ThermoScrape {
 
             // Pull the first page so we can a) get the page count at the bottom and b) cache the contents for scraping
             Console.WriteLine("Getting first page with page count...");
-            IDocument firstPage = GetPage(0);
-            List<IElement> pageNumbers = firstPage.QuerySelectorAll(".page_number").ToList();
+            pages.Add(GetPage(0));
+            List<IElement> pageNumbers = pages[0].QuerySelectorAll(".page_number").ToList();
             int pageCount = pageNumbers.Count;
             Console.WriteLine($"\tDone, found {pageCount} pages.");
 
